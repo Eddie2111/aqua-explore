@@ -1,4 +1,3 @@
-
 import { EMethodTypes } from '../../core/EMethod.types';
 import type { TRequestConfig, TSignInProps, TVerifyRequest } from './auth.types';
 

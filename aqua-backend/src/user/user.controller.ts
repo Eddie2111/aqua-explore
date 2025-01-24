@@ -6,18 +6,33 @@ import {
   Patch,
   Param,
   Delete,
+  Req, Res
 } from '@nestjs/common';
+import { Response, Request } from 'express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { VerifyUserDto } from './dto/verify-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Get("/getme")
+  getMe(@Req() req: Request) {
+    return this.userService.getMe(req);
+  }
+  @Post('/login')
+  userLogin(@Body() createUserDto: CreateUserDto) {
+    return this.userService.login(createUserDto);
+  }
+  @Post('/signup')
+  userSignup(@Body() createUserDto: CreateUserDto) {
+    return this.userService.signup(createUserDto);
+  }
+  @Post('/verify')
+  userVerify(@Body() verifyUserDto: VerifyUserDto, @Res() res: Response) {
+    return this.userService.verify(verifyUserDto,res);
   }
 
   @Get()
