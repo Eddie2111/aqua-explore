@@ -20,7 +20,7 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="/auth" className="hover:text-blue-200">
+              <Link href="/login" className="hover:text-blue-200">
                 Login
               </Link>
             </li>

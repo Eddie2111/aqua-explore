@@ -1,49 +1,115 @@
 'use client';
 
-import { useState } from 'react';
+import React from 'react';
+
+import { useRouter } from 'next/navigation';
+
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import Navbar from '@/components/layouts/navbar';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+
+import { useLocalStorage } from '@/utils/localStorage';
+
+import userApiModule from '@/components/shared/api/modules/auth';
+import { queryClient, useMutation } from '@/components/shared/api/core/wrapper';
+import { TLoginResponse } from '@/components/shared/api/modules/auth/auth.types';
+
+import { emailSchemaResolver } from '@/components/shared/schema/email.validation';
+import type { TEmailSchema } from '@/components/shared/schema/email.validation';
 
 export default function Auth() {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const router = useRouter();
+  const { setLocalStorage } = useLocalStorage();
+  const form = useForm<TEmailSchema>({
+    resolver: emailSchemaResolver,
+    defaultValues: {
+      email: '',
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage(`Magic link sent to ${email}. Please check your inbox.`);
-  };
+  const mutation = useMutation<TLoginResponse, Error, TEmailSchema>({
+    mutationFn: (data) => userApiModule.signIn(data),
+    onSuccess: (data) => {
+      console.log(data, 'where am I?');
+      setLocalStorage('token', data.access_token);
+      queryClient.invalidateQueries({ queryKey: ['login'] });
+      router.push('/dashboard');
+    },
+    onError: (error) => {
+      console.error('Login error:', error);
+      form.setError('root', {
+        type: 'manual',
+        message: error.message,
+      });
+    },
+  });
+
+  function onSubmit(values: TEmailSchema) {
+    mutation.mutate(values);
+    toast.success(
+      `Magic link sent to your email -> ${values.email}. Please check your inbox.`,
+    );
+    console.log(values);
+  }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-blue-800 mb-6">Login</h1>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-gray-700 font-bold mb-2"
+      <main className="flex-grow mx-auto px-4 py-8 container">
+        <div className="bg-white shadow-md mx-auto p-8 rounded-lg max-w-md">
+          <h1 className="mb-6 font-bold text-3xl text-blue-800">Login</h1>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div className="mb-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field, fieldState }) => (
+                    <FormItem>
+                      <FormLabel className="block mb-2 font-bold text-gray-700 text-md">
+                        Email
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="johndoe@example.com"
+                          type="email"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        This is where you will recieve your email.
+                      </FormDescription>
+                      <FormMessage>
+                        {fieldState.error && (
+                          <span className="text-red-500">
+                            {fieldState.error.message}
+                          </span>
+                        )}
+                      </FormMessage>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md w-full text-white transition-colors"
               >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
-            >
-              Send Magic Link
-            </button>
-          </form>
-          {message && <p className="mt-4 text-green-600">{message}</p>}
+                Send Magic Link
+              </Button>
+            </form>
+          </Form>
         </div>
       </main>
     </div>

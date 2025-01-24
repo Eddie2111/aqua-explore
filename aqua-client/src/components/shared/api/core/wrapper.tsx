@@ -8,17 +8,17 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 
-const Queryclient = new QueryClient();
+const queryClient = new QueryClient();
 
 const ApiProviderWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
-    <QueryClientProvider client={Queryclient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 
 export {
   ApiProviderWrapper,
-  Queryclient,
+  queryClient,
   useQuery,
   useMutation,
   useQueryClient,
