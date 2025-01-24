@@ -5,17 +5,17 @@ import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
 import { ConfigModule } from '@nestjs/config';
 import { ExpeditionModule } from './expedition/expedition.module';
-import { MongooseModule } from '@nestjs/mongoose';
+import { DatabaseModule } from './db/database.module';
 import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
-    UserModule,
-    EmailModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot('mongodb://localhost:27017'),
+    DatabaseModule,
+    UserModule,
+    EmailModule,
     ExpeditionModule,
     NotificationModule,
   ],

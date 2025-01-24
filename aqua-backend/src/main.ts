@@ -1,10 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  const globalValidationPipeline = new ValidationPipe();
+  
+  app.useGlobalPipes(globalValidationPipeline);
+  app.setGlobalPrefix('api/v1');
+
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+  app.enableVersioning({
+    type: VersioningType.URI,
+    prefix: 'v1',
+  });
+  
   await app.listen(process.env.PORT);
   console.log(`This application is running on: ${await app.getUrl()}`);
 }

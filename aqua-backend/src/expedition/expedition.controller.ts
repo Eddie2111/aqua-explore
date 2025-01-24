@@ -27,7 +27,7 @@ export class ExpeditionController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.expeditionService.findOne(+id);
+    return this.expeditionService.findOne(id);
   }
 
   @Patch(':id')
@@ -35,11 +35,11 @@ export class ExpeditionController {
     @Param('id') id: string,
     @Body() updateExpeditionDto: UpdateExpeditionDto,
   ) {
-    return this.expeditionService.update(+id, updateExpeditionDto);
+    return this.expeditionService.update(id, updateExpeditionDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.expeditionService.delete(+id);
+    return this.expeditionService.delete(id);
   }
 }

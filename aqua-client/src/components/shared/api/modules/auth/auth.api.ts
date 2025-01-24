@@ -1,5 +1,6 @@
-import { EMethodTypes } from './auth.types';
-import type { TRequestConfig, TSignInProps } from './auth.types';
+
+import { EMethodTypes } from '../../core/EMethod.types';
+import type { TRequestConfig, TSignInProps, TVerifyRequest } from './auth.types';
 
 class userModule {
   private readonly baseURL: string;
@@ -40,14 +41,18 @@ class userModule {
   }
 
   async signIn({ email }: TSignInProps) {
-    return this.request('/email/login', EMethodTypes.POST, { email });
+    return this.request('/user/login', EMethodTypes.POST, { email });
   }
 
   async signUp({ email }: TSignInProps) {
-    return this.request('/email/signup', EMethodTypes.POST, {
+    return this.request('/user/signup', EMethodTypes.POST, {
       email,
     });
   }
+  async verifyUser({token, requestType}: TVerifyRequest) {
+    return this.request('/user/verify', EMethodTypes.POST, {
+     token, requestType 
+    })};
 
   async signOut() {
     throw new Error('Method not implemented.');

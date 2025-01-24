@@ -16,7 +16,8 @@ export class ExpeditionRepository {
     createExpeditionDto: CreateExpeditionDto,
   ): Promise<ExpeditionDocument> {
     const createdExpedition = new this.expeditionModel(createExpeditionDto);
-    return createdExpedition.save();
+    const data = await createdExpedition.save();
+    return data;
   }
 
   async findAll(): Promise<ExpeditionDocument[]> {

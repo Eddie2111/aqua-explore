@@ -1,4 +1,3 @@
-import Navbar from '@/components/layouts/navbar';
 
 const bookings = [
   {
@@ -18,7 +17,6 @@ const bookings = [
 export default function Dashboard() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-blue-800 mb-8">Your Bookings</h1>
         <div className="bg-white rounded-lg shadow-md overflow-hidden">

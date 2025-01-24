@@ -1,36 +1,25 @@
-import { IsString } from 'class-validator';
+import { IsArray, IsDate, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateExpeditionDto {
   @IsString()
-  id!: string;
-
-  @IsString()
   name!: string;
-
   @IsString()
   description!: string;
-
-  @IsString()
+  @Type(() => Date)
   expeditionDate!: Date;
-
   @IsString()
   expeditionStatus!: string;
-
   @IsString()
   expeditionType!: string;
-
   @IsString()
   expeditionLocation!: string;
-
-  @IsString()
+  @IsNumber()
   expeditionDuration!: number;
-
-  @IsString()
+  @IsNumber()
   expeditionCost!: number;
-
-  @IsString()
+  @IsNumber()
   expeditionCapacity!: number;
-
-  @IsString()
+  @IsArray()
   expeditionParticipants!: string[];
 }

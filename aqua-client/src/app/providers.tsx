@@ -6,6 +6,7 @@ import { useLocalStorage } from '@/utils/localStorage';
 import { useQuery } from '@/components/shared/api';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import { useRouter, usePathname } from 'next/navigation';
+import Navbar from '@/components/layouts/navbar';
 
 export default function ClientProvider({
   children,
@@ -58,5 +59,5 @@ export default function ClientProvider({
     );
   }
 
-  return <>{children}</>;
+  return <><Navbar /> <div>{children}</div></>;
 }
