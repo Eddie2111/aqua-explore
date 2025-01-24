@@ -53,14 +53,14 @@ export class EmailService {
   async sendSignupEmail(
     recipient: string,
   ): Promise<{ success: boolean; address: string }> {
-    const token = this.jwtService.sign(
-      { email: recipient },
-      { expiresIn: '1h' },
-    );
+    const payload = { email: recipient };
+    const token = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+    });
     const mail: MailDataRequired = {
       to: recipient,
       from: this.verifiedSender,
-      subject: '',
+      subject: 'Signup to AquaExplore',
       html: `
       <h1>Click on the following link to Signup to AquaExplore</h1>
       <a href="http://localhost:3000/auth/verify?token=${token}&tokentype=signup">Navigate to AquaExplore! →</a>

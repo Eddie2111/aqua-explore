@@ -4,11 +4,13 @@ import { UpdateExpeditionDto } from './dto/update-expedition.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
+import { ExpeditionDocument } from 'src/db/schema/expedition.schema';
+
 @Injectable()
 export class ExpeditionService {
   constructor(
     @InjectModel('Expedition')
-    private readonly expeditionRepository: Model<any>,
+    private readonly expeditionRepository: Model<ExpeditionDocument>,
   ) {}
 
   create(createExpeditionDto: CreateExpeditionDto) {
@@ -19,15 +21,15 @@ export class ExpeditionService {
     return this.expeditionRepository.find();
   }
 
-  findOne(id: number) {
-    return this.expeditionRepository.findOne({ id: id });
+  findOne(id: string) {
+    return this.expeditionRepository.findOne({ _id: id });
   }
 
-  update(id: number, updateExpeditionDto: UpdateExpeditionDto) {
-    return this.expeditionRepository.updateOne({ id: id }, updateExpeditionDto);
+  update(id: string, updateExpeditionDto: UpdateExpeditionDto) {
+    return this.expeditionRepository.updateOne({ _id: id }, updateExpeditionDto);
   }
 
-  delete(id: number): Promise<any> {
-    return this.expeditionRepository.deleteOne({ id: id });
+  delete(id: string): Promise<any> {
+    return this.expeditionRepository.deleteOne({ _id: id });
   }
 }

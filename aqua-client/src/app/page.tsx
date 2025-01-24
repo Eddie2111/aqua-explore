@@ -1,4 +1,3 @@
-import Navbar from '@/components/layouts/navbar';
 import Link from 'next/link';
 
 const expeditions = [
@@ -28,7 +27,6 @@ const expeditions = [
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-blue-800 mb-8">
           Undersea Expeditions

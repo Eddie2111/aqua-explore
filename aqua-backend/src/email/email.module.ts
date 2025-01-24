@@ -13,5 +13,6 @@ import { JwtModule } from '@nestjs/jwt';
   ],
   controllers: [EmailController],
   providers: [EmailService],
+  exports: [EmailModule]
 })
 export class EmailModule {}

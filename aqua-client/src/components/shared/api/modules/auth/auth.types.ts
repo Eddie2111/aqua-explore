@@ -1,9 +1,5 @@
-export enum EMethodTypes {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  DELETE = 'DELETE',
-}
+import { EMethodTypes } from "../../core/EMethod.types";
+
 export type TRequestConfig = {
   method: EMethodTypes;
   headers: Record<string, string>;
@@ -19,3 +15,7 @@ export type TSignUpProps = {
 export type TLoginResponse = {
   access_token: string;
 };
+export type TVerifyRequest = {
+  token: string;
+  requestType: string;
+}
