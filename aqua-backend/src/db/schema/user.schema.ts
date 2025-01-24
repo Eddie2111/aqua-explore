@@ -3,9 +3,34 @@ import * as mongoose from 'mongoose';
 import { CustomBaseSchema } from './customBase.schema';
 import { EUserRoles } from 'src/common/enums/userRoles.enum';
 
-export const UserSchema = new mongoose.Schema({
-  ...CustomBaseSchema,
-  name: String,
-  email: Number,
-  role: EUserRoles,
-});
+export const UserSchema = new mongoose.Schema(
+  {
+    ...CustomBaseSchema,
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: Object.values(EUserRoles),
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+    collection: 'User',
+  },
+);
+
+export type UserDocument = mongoose.Document & {
+  id?: string;
+  name: string;
+  email: string;
+  role: EUserRoles;
+  createdAt?: string;
+  updatedAt?: string;
+};
