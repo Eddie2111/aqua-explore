@@ -1,5 +1,5 @@
 import { EMethodTypes } from './auth.types';
-import type { TRequestConfig, TSignInProps, TSignUpProps } from './auth.types';
+import type { TRequestConfig, TSignInProps } from './auth.types';
 
 class userModule {
   private readonly baseURL: string;
@@ -39,15 +39,13 @@ class userModule {
     });
   }
 
-  async signIn({ email, password }: TSignInProps) {
-    return this.request('/user/login', EMethodTypes.POST, { email, password });
+  async signIn({ email }: TSignInProps) {
+    return this.request('/email/login', EMethodTypes.POST, { email });
   }
 
-  async signUp({ email, password, fullName }: TSignUpProps) {
-    return this.request('/user/signup', EMethodTypes.POST, {
+  async signUp({ email }: TSignInProps) {
+    return this.request('/email/signup', EMethodTypes.POST, {
       email,
-      password,
-      fullName,
     });
   }
 

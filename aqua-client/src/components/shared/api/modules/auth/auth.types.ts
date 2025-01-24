@@ -11,10 +11,11 @@ export type TRequestConfig = {
 };
 export type TSignInProps = {
   email: string;
-  password: string;
 };
 export type TSignUpProps = {
   email: string;
-  password: string;
   fullName: string;
+};
+export type TLoginResponse = {
+  access_token: string;
 };
