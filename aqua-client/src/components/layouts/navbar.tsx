@@ -14,31 +14,45 @@ export default function Header() {
           AquaExplore
         </Link>
         <nav>
-          <ul className="flex space-x-4">
-            <li>
-              <Link href="/" className="hover:text-blue-200">
+          <ul className="flex">
+            <li className="mt-2">
+              <Link
+                href="/"
+                className="bg-white rounded-lg px-5 py-2 mx-2 hover:shadow-sm hover:shadow-blue-400 duration-300 font-semibold text-black mt-4"
+              >
                 Home
               </Link>
             </li>
-            <li>
-              <Link
-                href={`/${role?.toLocaleLowerCase()}/dashboard/`}
-                className="hover:text-blue-200"
-              >
-                Dashboard
-              </Link>
+            <li className="mt-2">
+              {role && (
+                <Link
+                  href={`/${role?.toLocaleLowerCase()}/dashboard/`}
+                  className="bg-white rounded-lg px-3 py-2 hover:shadow-sm hover:shadow-blue-400 duration-300 font-semibold text-black mx-2"
+                >
+                  Dashboard
+                </Link>
+              )}
             </li>
-            <li>
+            <li className="mt-2">
               {user_id ? (
-                <Link href="/logout" className="hover:text-blue-200">
+                <Link
+                  href="/logout"
+                  className="bg-white rounded-lg px-3 py-2 hover:shadow-sm hover:shadow-blue-400 duration-300 font-semibold text-black"
+                >
                   Logout
                 </Link>
               ) : (
                 <div className="flex flex-row gap-2">
-                  <Link href="/signup" className="hover:text-blue-200">
+                  <Link
+                    href="/signup"
+                    className="bg-white rounded-lg px-3 py-2 hover:shadow-sm hover:shadow-blue-400 duration-300 font-semibold text-black"
+                  >
                     Register
                   </Link>
-                  <Link href="/login" className="hover:text-blue-200">
+                  <Link
+                    href="/login"
+                    className="bg-white rounded-lg px-3 py-2 hover:shadow-sm hover:shadow-blue-400 duration-300 font-semibold text-black"
+                  >
                     Login
                   </Link>
                 </div>

@@ -17,8 +17,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { useLocalStorage } from '@/utils/localStorage';
-
 import userApiModule from '@/components/shared/api/modules/auth';
 import { queryClient, useMutation } from '@/components/shared/api/core/wrapper';
 import { TLoginResponse } from '@/components/shared/api/modules/auth/auth.types';
@@ -27,7 +25,6 @@ import { emailSchemaResolver } from '@/components/shared/schema/email.validation
 import type { TEmailSchema } from '@/components/shared/schema/email.validation';
 
 export default function Auth() {
-  const { setLocalStorage } = useLocalStorage();
   const form = useForm<TEmailSchema>({
     resolver: emailSchemaResolver,
     defaultValues: {
@@ -38,8 +35,9 @@ export default function Auth() {
   const mutation = useMutation<TLoginResponse, Error, TEmailSchema>({
     mutationFn: (data) => userApiModule.signIn(data),
     onSuccess: (data) => {
-      console.log(data, 'where am I?');
-      setLocalStorage('token', data.access_token);
+      toast.success(
+        `Magic link sent to your email -> ${data.address}. Please check your inbox.`,
+      );
       queryClient.invalidateQueries({ queryKey: ['login'] });
     },
     onError: (error) => {
@@ -53,9 +51,6 @@ export default function Auth() {
 
   function onSubmit(values: TEmailSchema) {
     mutation.mutate(values);
-    toast.success(
-      `Magic link sent to your email -> ${values.email}. Please check your inbox.`,
-    );
     console.log(values);
   }
 

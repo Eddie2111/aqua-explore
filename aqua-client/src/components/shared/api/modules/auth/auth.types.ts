@@ -13,6 +13,10 @@ export type TSignUpProps = {
   fullName: string;
 };
 export type TLoginResponse = {
+  success: true;
+  address: string;
+};
+export type TSignupResponse = {
   access_token: string;
 };
 export type TVerifyRequest = {

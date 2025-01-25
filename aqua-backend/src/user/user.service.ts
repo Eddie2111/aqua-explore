@@ -21,7 +21,7 @@ export class UserService {
 
   async getMe(token: { authToken: string }) {
     const getToken = token.authToken.slice(3, -3);
-    if (!getToken) throw new Error('no token');
+    if (!getToken) throw new NotFoundException('Token not found');
     const verifyUser = await this.jwtService.verify(getToken, {
       secret: process.env.JWT_SECRET,
     });
@@ -106,8 +106,7 @@ export class UserService {
         });
       }
     } catch (e) {
-      console.log(e.message);
-      throw new Error('Invalid token');
+      throw new NotFoundException('Invalid Token');
     }
   }
 
