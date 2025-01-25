@@ -13,7 +13,8 @@ async function bootstrap() {
   
   app.enableCors({
     origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
     credentials: true,
   });
   app.enableVersioning({

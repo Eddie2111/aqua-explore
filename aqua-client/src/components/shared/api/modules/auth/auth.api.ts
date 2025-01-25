@@ -17,7 +17,7 @@ class userModule {
     const config: TRequestConfig = {
       method,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json',        
         ...headers,
       },
     };
@@ -33,10 +33,13 @@ class userModule {
     return data;
   }
 
-  async getMe(token: string) {
-    return this.request('/user/me', EMethodTypes.GET, null, {
-      Authorization: `Bearer ${token}`,
-    });
+  async getMe(authToken: {authToken: string}) {
+    const token = authToken.authToken.replace(/^"|"$/g, '');
+    return this.request("/user/getme/", EMethodTypes.POST, { authToken: token });
+  }
+
+  async onboard({name,id}:{name:string,id:string}){
+    return this.request('/user/onboard', EMethodTypes.POST, {name,id});
   }
 
   async signIn({ email }: TSignInProps) {

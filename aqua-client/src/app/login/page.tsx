@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import Navbar from '@/components/layouts/navbar';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -30,7 +29,6 @@ import { emailSchemaResolver } from '@/components/shared/schema/email.validation
 import type { TEmailSchema } from '@/components/shared/schema/email.validation';
 
 export default function Auth() {
-  const router = useRouter();
   const { setLocalStorage } = useLocalStorage();
   const form = useForm<TEmailSchema>({
     resolver: emailSchemaResolver,
@@ -45,7 +43,6 @@ export default function Auth() {
       console.log(data, 'where am I?');
       setLocalStorage('token', data.access_token);
       queryClient.invalidateQueries({ queryKey: ['login'] });
-      router.push('/dashboard');
     },
     onError: (error) => {
       console.error('Login error:', error);
@@ -66,7 +63,6 @@ export default function Auth() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
       <main className="flex-grow mx-auto px-4 py-8 container">
         <div className="bg-white shadow-md mx-auto p-8 rounded-lg max-w-md">
           <h1 className="mb-6 font-bold text-3xl text-blue-800">Login</h1>

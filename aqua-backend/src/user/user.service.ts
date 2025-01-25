@@ -8,6 +8,7 @@ import { ERequestType, VerifyUserDto } from './dto/verify-user.dto';
 import { UserDocument } from 'src/db/schema/user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { EUserRoles } from 'src/common/enums/userRoles.enum';
 
 @Injectable()
 export class UserService {
@@ -18,8 +19,8 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async getMe(@Req() request: Request){
-    const getToken = request.cookies['auth_token'];
+  async getMe(token: { authToken: string}){
+    const getToken = token.authToken.slice(3, -3);
     if (!getToken) throw new Error('no token');
     const verifyUser = await this.jwtService.verify(getToken, {
       secret: process.env.JWT_SECRET,
@@ -30,7 +31,7 @@ export class UserService {
       email: getUser.email,
       name: getUser.name,
       id: getUser._id,
-    }
+    };
   }
 
   login(createUserDto: CreateUserDto) {
@@ -42,14 +43,16 @@ export class UserService {
   }
 
   async verify(verifyUserDto: VerifyUserDto, res: Response) {
+    console.log(verifyUserDto);
     try {
-      const data = await this.jwtService.verify(verifyUserDto.token);
-      if (verifyUserDto.requestType == ERequestType.SIGNIN) {
+      const data = await this.jwtService.verify(verifyUserDto.token, {secret: process.env.JWT_SECRET});
+      if (verifyUserDto.requestType == ERequestType.LOGIN) {
+        console.log("request hit with login");
         const userData = await this.userRepository.findOne({
           email: data.email,
         });
-        const token = this.jwtService.sign(
-          { email: userData.email, name: userData.name, id: userData._id },
+        const token = await this.jwtService.sign(
+          { email: userData.email, name: userData.name, id: userData._id, role: userData.role },
           {
             secret: process.env.JWT_SECRET,
           },
@@ -57,20 +60,60 @@ export class UserService {
         res.cookie('auth_token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
+          sameSite: 'lax',
           maxAge: 3 * 24 * 60 * 60 * 1000,
         });
-        return token;
+        return res.json({ token: token, id: userData._id, email: userData.email, role: userData.role, message: 'verification success' });
       }
       if (verifyUserDto.requestType == ERequestType.SIGNUP) {
-        return {
+        const createUserEmail = await this.userRepository.create({
           email: data.email,
+          role: EUserRoles.USER,
+        });
+        const token = await this.jwtService.sign(
+          { email: data.email, role: EUserRoles.USER },
+          {
+            secret: process.env.JWT_SECRET,
+          },
+        );
+        res.cookie('auth_token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 3 * 24 * 60 * 60 * 1000,
+        });
+        return res.json({
+          id: createUserEmail._id,
+          token,
+          email: data.email,
+          role: EUserRoles.USER,
           message: 'verification success',
-        };
+        });
       }
     } catch (e) {
+      console.log(e.message);
       throw new Error('Invalid token');
     }
+  }
+
+  async onboarding(userData: {name:string,id:string}) {
+    const cleanedId = userData.id.replace(/^"|"$/g, '');
+    await this.userRepository.updateOne({_id: cleanedId}, {name: userData.name});
+    const getUser = await this.userRepository.findOne({_id: cleanedId}).select('name email role id');
+    if(!getUser) throw new NotFoundException('User not found');
+    const token = this.jwtService.sign(
+      { email: getUser.email, name: getUser.name, id: getUser._id, role: getUser.role },
+      {
+        secret: process.env.JWT_SECRET,
+      },
+    );
+    return {
+      auth_token: token,
+      name: getUser.name,
+      email: getUser.email,
+      id: getUser._id,
+      role: getUser.role,
+    };
   }
 
   findAll() {
