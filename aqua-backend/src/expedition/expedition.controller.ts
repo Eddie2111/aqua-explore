@@ -25,6 +25,18 @@ export class ExpeditionController {
     return this.expeditionService.findAll();
   }
 
+  @Get('/search/:params')
+  find(@Param('params') params: string) {
+    return this.expeditionService.find(params);
+  }
+
+  @Post('/addParticipant')
+  addParticipant(@Body() createExpeditionDto: UpdateExpeditionDto) {
+    const id = createExpeditionDto._id;
+    return this.expeditionService.update(id, createExpeditionDto);
+  }
+
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.expeditionService.findOne(id);

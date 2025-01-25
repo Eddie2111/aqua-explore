@@ -41,7 +41,9 @@ export default function VerifyPage() {
     },
     onError: (error) => {
       console.error("Login error:", error);
-      !hasMutated && toast.error("Error verifying user");
+      if(!hasMutated){
+      toast.error("Error verifying user");
+      }
     },
   });
 

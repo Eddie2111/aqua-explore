@@ -3,6 +3,8 @@ import { Type } from 'class-transformer';
 
 export class CreateExpeditionDto {
   @IsString()
+  _id?:string;
+  @IsString()
   name!: string;
   @IsString()
   description!: string;

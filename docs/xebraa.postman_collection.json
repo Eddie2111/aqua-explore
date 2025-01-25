@@ -1,0 +1,221 @@
+{
+	"info": {
+		"_postman_id": "01fdde28-4413-4b82-9b69-2e4ae42a9647",
+		"name": "xebraa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21037222",
+		"_collection_link": "https://orange-zodiac-958395.postman.co/workspace/test~cfbd9aad-c16d-4b24-b3ab-13c2ac856d50/collection/21037222-01fdde28-4413-4b82-9b69-2e4ae42a9647?action=share&source=collection_link&creator=21037222"
+	},
+	"item": [
+		{
+			"name": "user/signup",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "create expedition",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"_id\":\"67938c6759a2183232ebe57d\",\r\n      \"name\": \"Bali Diving Adventure1\",\r\n      \"description\": \"3-day diving expedition in Bali\",\r\n      \"expeditionDate\": \"2024-04-15T08:00:00Z\",\r\n      \"expeditionStatus\": \"UPCOMING\",\r\n      \"expeditionType\": \"SCUBA_DIVING\",\r\n      \"expeditionLocation\": \"Deepali, Indonesia\",\r\n      \"expeditionDuration\": 3,\r\n      \"expeditionCost\": 599.99,\r\n      \"expeditionCapacity\": 10,\r\n      \"expeditionParticipants\": [\"user-123\",\"user-124\"]\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/expedition",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"expedition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update an expedition",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"name\": \"Bali Diving Adventure6\",\r\n      \"description\": \"3-day diving expedition in Bali\",\r\n      \"expeditionDate\": \"2024-04-15T08:00:00Z\",\r\n      \"expeditionStatus\": \"UPCOMING\",\r\n      \"expeditionType\": \"SCUBA_DIVING\",\r\n      \"expeditionLocation\": \"Deepali, Indonesia\",\r\n      \"expeditionDuration\": 3,\r\n      \"expeditionCost\": 599.99,\r\n      \"expeditionCapacity\": 10,\r\n      \"expeditionParticipants\": [\"user-123\",\"user-124\"]\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/expedition/67938c6759a2183232ebe57d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"expedition",
+						"67938c6759a2183232ebe57d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/getme (gets a user for ongoing session)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5hcHAiLCJzdWIiOjEsImlhdCI6MTczNjA5NDA5NX0.doicjwjCYcrbO6GhblP_szJ7b5L4Hq27_yGBr4HdWwY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"authToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzbS50YXJlcS5tYWhtb29kQGcuYnJhY3UuYWMuYmQiLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczNzc2NjYyOSwiZXhwIjoxNzM4MDI1ODI5fQ.XhCmVZxnY81lXvgRd2lFPehIx8AqBvGkdBZMtib-CzU\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/user/getme",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"getme"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user verification upon link from email",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzbS50YXJlcS5tYWhtb29kQGcuYnJhY3UuYWMuYmQiLCJpYXQiOjE3Mzc3NTk3NjIsImV4cCI6MTczODAxODk2Mn0.-TkOJK8Obg1woQKYNcQnZYu96J--P-6DoSMJOsfGp8U\",\r\n    \"requestType\": \"signup\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/user/verify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"verify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user verification upon login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzbS50YXJlcS5tYWhtb29kQGcuYnJhY3UuYWMuYmQiLCJpYXQiOjE3Mzc3OTY5OTAsImV4cCI6MTczODA1NjE5MH0.udJEW4s9bU2HGxRM5z-sJNHEj9zSFQQfTARACJ_Z5Vk\",\r\n    \"requestType\":\"login\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/user/verify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"verify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "expedition search",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/v1/expedition/search/bali",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"expedition",
+						"search",
+						"bali"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

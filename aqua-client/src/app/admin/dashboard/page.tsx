@@ -11,11 +11,20 @@ import ExpeditionList from "./components/expeditionList"
 import ExpeditionAnalytics from "./components/expeditionAnalytics";
 import CreateUserForm from "./components/createUserForm";
 import CreateExpeditionForm from "./components/createExpeditionForm";
+import { useQuery } from "@/components/shared/api"
+import expeditionApiModule from "@/components/shared/api/modules/events"
+import { LoadingSpinner } from "@/components/ui/loadingSpinner"
 
 export default function AdminDashboard() {
   const [isUserDialogOpen, setIsUserDialogOpen] = useState(false)
   const [isExpeditionDialogOpen, setIsExpeditionDialogOpen] = useState(false)
-
+  const { data: expeditions, isLoading, error } = useQuery({
+    queryKey: ['expeditions'],
+    queryFn: () => expeditionApiModule.read(),
+  });
+  if (isLoading) return <LoadingSpinner/>;
+  if (error) return <div>Error: {error.message}</div>;
+  if(expeditions)
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow container mx-auto px-4 py-8">
@@ -57,7 +66,7 @@ export default function AdminDashboard() {
             <UserList />
           </TabsContent>
           <TabsContent value="expeditions">
-            <ExpeditionList />
+            <ExpeditionList expeditions={expeditions}/>
           </TabsContent>
           <TabsContent value="analytics">
             <ExpeditionAnalytics />
