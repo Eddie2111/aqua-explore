@@ -1,9 +1,8 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import userApiModule from '@/components/shared/api/modules/auth';
 import { useLocalStorage } from '@/utils/localStorage';
-import { useQuery } from '@/components/shared/api';
+import { useMutation } from '@/components/shared/api';
 import { LoadingSpinner } from '@/components/ui/loadingSpinner';
 import { useRouter, usePathname } from 'next/navigation';
 import Navbar from '@/components/layouts/navbar';
@@ -16,40 +15,44 @@ export default function ClientProvider({
   const router = useRouter();
   const pathname = usePathname();
   const { getLocalStorage } = useLocalStorage();
-  const token = getLocalStorage('token');
+  const token = getLocalStorage('auth_token');
   const [isInitialized, setIsInitialized] = useState(false);
-
-  const publicRoutes = ['/', '/login', '/signup'];
+  const publicRoutes = ['/', '/login', '/signup', '/onboarding', '/auth/verify'];
 
   const {
     data: user,
     error,
-    isLoading,
-  } = useQuery({
-    queryKey: ['user'],
-    queryFn: async () => {
+    isSuccess,
+    isPending,
+    mutate
+  } = useMutation({
+    mutationFn: async () => {
       if (!token) {
         throw new Error(`Token not found. ${error}`);
       }
-      return await userApiModule.getMe(token);
+      return await userApiModule.getMe({authToken: token});
     },
-    retry: false,
-    enabled: !!token,
   });
-
+  
   useEffect(() => {
-    if (!isLoading) {
+    if (token) {
+      mutate();
+    }
+  }, [token]);
+  
+  useEffect(() => {
+    if (!isPending) {
       setIsInitialized(true);
     }
-  }, [isLoading]);
-
+  }, [isPending]);
+  
   useEffect(() => {
-    if (isInitialized && !isLoading) {
+    if (isInitialized && !isPending) {
       if (!user && !publicRoutes.includes(pathname)) {
         router.push('/');
       }
     }
-  }, [isInitialized, isLoading, user, pathname, router]);
+  }, [isInitialized, isPending, user, pathname, router]);
 
   if (!isInitialized) {
     return (

@@ -16,7 +16,6 @@ export default function CreateExpeditionForm({ onSuccess }: CreateExpeditionForm
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send a request to your API to create the expedition
     console.log("Creating expedition:", { name, date, capacity: Number.parseInt(capacity) })
     onSuccess()
   }

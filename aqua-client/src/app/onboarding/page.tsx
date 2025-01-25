@@ -2,10 +2,11 @@
 
 import React from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
-import Navbar from '@/components/layouts/navbar';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -22,26 +23,41 @@ import { useLocalStorage } from '@/utils/localStorage';
 
 import userApiModule from '@/components/shared/api/modules/auth';
 import { queryClient, useMutation } from '@/components/shared/api/core/wrapper';
-import { TLoginResponse } from '@/components/shared/api/modules/auth/auth.types';
 
-import { emailSchemaResolver } from '@/components/shared/schema/email.validation';
-import type { TEmailSchema } from '@/components/shared/schema/email.validation';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const nameSchema = z.object({
+  name: z
+  .string()
+  .min(1, { message: 'Name is required' })
+  .regex(/^[a-z A-Z]+$/, {message: 'Name must be alphabetic'})
+});
+
+export const nameSchemaResolver = zodResolver(nameSchema);
+export type TNameSchema = z.infer<typeof nameSchema>;
+
 
 export default function Auth() {
-  const { setLocalStorage } = useLocalStorage();
-  const form = useForm<TEmailSchema>({
-    resolver: emailSchemaResolver,
+  const router = useRouter();
+  const { getLocalStorage, setLocalStorage } = useLocalStorage();
+  const form = useForm<TNameSchema>({
+    resolver: nameSchemaResolver,
     defaultValues: {
-      email: '',
+      name: '',
     },
   });
+  const id = getLocalStorage('id') ?? "";
 
-  const mutation = useMutation<TLoginResponse, Error, TEmailSchema>({
-    mutationFn: (data) => userApiModule.signUp(data),
+  const mutation = useMutation<any, Error, TNameSchema>({
+    mutationFn: (data) => userApiModule.onboard({name: data.name, id:id}),
     onSuccess: (data) => {
-      console.log(data, 'where am I?');
       setLocalStorage('token', data.access_token);
-      queryClient.invalidateQueries({ queryKey: ['signup'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      toast.success(
+        `Onboarding success, welcome ${data.name}!`,
+      );
+      router.push('/dashboard');
     },
     onError: (error) => {
       console.error('Login error:', error);
@@ -52,40 +68,36 @@ export default function Auth() {
     },
   });
 
-  function onSubmit(values: TEmailSchema) {
+  function onSubmit(values: TNameSchema) {
     mutation.mutate(values);
-    toast.success(
-      `Magic link sent to your email -> ${values.email}. Please check your inbox.`,
-    );
     console.log(values);
   }
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
       <main className="flex-grow mx-auto px-4 py-8 container">
         <div className="bg-white shadow-md mx-auto p-8 rounded-lg max-w-md">
-          <h1 className="mb-6 font-bold text-3xl text-blue-800">Signup</h1>
+          <h1 className="mb-6 font-bold text-3xl text-blue-800">Welcome, onboard</h1>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="mb-4">
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="name"
                   render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel className="block mb-2 font-bold text-gray-700 text-md">
-                        Email
+                        Full Name
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="johndoe@example.com"
-                          type="email"
+                          placeholder="John Doe"
+                          type="text"
                           {...field}
                         />
                       </FormControl>
                       <FormDescription>
-                        This is where you will recieve your email.
+                        This is the name that will publicly visible.
                       </FormDescription>
                       <FormMessage>
                         {fieldState.error && (
@@ -102,7 +114,7 @@ export default function Auth() {
                 type="submit"
                 className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md w-full text-white transition-colors"
               >
-                Send Magic Link
+                Get Onboard
               </Button>
             </form>
           </Form>

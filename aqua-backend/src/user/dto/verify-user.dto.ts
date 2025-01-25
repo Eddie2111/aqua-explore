@@ -1,6 +1,6 @@
 export enum ERequestType {
   SIGNUP = 'signup',
-  SIGNIN = 'signin',
+  LOGIN = 'login',
 }
 export class VerifyUserDto {
   token: string;

@@ -18,9 +18,9 @@ import { VerifyUserDto } from './dto/verify-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get("/getme")
-  getMe(@Req() req: Request) {
-    return this.userService.getMe(req);
+  @Post("/getme")
+  getMe(@Body() authToken: { authToken: string}) {
+    return this.userService.getMe(authToken);
   }
   @Post('/login')
   userLogin(@Body() createUserDto: CreateUserDto) {
@@ -34,13 +34,17 @@ export class UserController {
   userVerify(@Body() verifyUserDto: VerifyUserDto, @Res() res: Response) {
     return this.userService.verify(verifyUserDto,res);
   }
+  @Post("/onboard")
+  userOnboard(@Body() onboardUserDto: { name: string; id: string; }) {
+    return this.userService.onboarding(onboardUserDto);
+  }
 
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get(':id')
+  @Get('me/:id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
