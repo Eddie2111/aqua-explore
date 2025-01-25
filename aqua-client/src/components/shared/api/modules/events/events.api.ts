@@ -1,4 +1,5 @@
 import { EMethodTypes, TRequestConfig } from '../../core/EMethod.types';
+import { TExpedition } from './events.types';
 
 class userModule {
   private readonly baseURL: string;
@@ -28,21 +29,20 @@ class userModule {
       throw new Error(errorData.message || 'An error occurred');
     }
     const data = await response.json();
-    console.log(data);
     return data;
   }
 
-  async create(data: any) {
+  async create(data: TExpedition) {
     return this.request("/expedition", EMethodTypes.POST, data);
   }
-  async read() {
+  async read(): Promise<TExpedition[] | null> {
     return this.request("/expedition", EMethodTypes.GET);
   }
-  async readOne(data: string) {
+  async readOne(data: string): Promise<TExpedition | null> {
     return this.request(`/expedition/${data}`, EMethodTypes.GET);
   }
-  async update(data: any) {
-    return this.request(`/expedition/${data.id}`, EMethodTypes.PUT, data);
+  async update(data: Partial<TExpedition>) {
+    return this.request(`/expedition/${data._id}`, EMethodTypes.PUT, data);
   }
   async delete(data: string) {
     return this.request(`/expedition/${data}`, EMethodTypes.DELETE);

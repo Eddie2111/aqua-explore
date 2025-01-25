@@ -13,10 +13,15 @@ const useLocalStorage = () => {
 
   const setLocalStorage = (key: string, value: string) => {
     if (!isBrowser) return;
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, value);
   };
 
-  return { getLocalStorage, setLocalStorage };
+  const clearLocalStorage = () => {
+    if (!isBrowser) return;
+    localStorage.clear();
+  }
+
+  return { clearLocalStorage, getLocalStorage, setLocalStorage };
 };
 
 export const useLocalStorageState = <T>(key: string, initialValue: T) => {

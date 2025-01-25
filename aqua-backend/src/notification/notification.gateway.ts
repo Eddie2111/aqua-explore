@@ -1,41 +1,55 @@
 import {
-  WebSocketGateway,
-  SubscribeMessage,
+  ConnectedSocket,
   MessageBody,
-} from '@nestjs/websockets';
-import { NotificationService } from './notification.service';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+  SubscribeMessage,
+  WebSocketGateway,
+} from "@nestjs/websockets";
+import { AbstractWebsocketGateway, TSocket } from "./abstract.gateway";
+import { EEventType, NotificationDto } from "./dto/create-notification.dto";
 
-@WebSocketGateway()
-export class NotificationGateway {
-  constructor(private readonly notificationService: NotificationService) {}
-
-  @SubscribeMessage('createNotification')
-  create(@MessageBody() createNotificationDto: CreateNotificationDto) {
-    return this.notificationService.create(createNotificationDto);
+@WebSocketGateway(5001, {
+  cors: {
+    origin: '*',
+  },
+  path: "/",
+  transports: ['websocket', 'polling'],
+})
+export class NotificationGateway extends AbstractWebsocketGateway {
+  constructor(
+  ) {
+    super();
   }
 
-  @SubscribeMessage('findAllNotification')
-  findAll() {
-    return this.notificationService.findAll();
+  private userIdToSocketMap: Map<number, TSocket> = new Map();
+
+  onModuleInit(): void {
+    super.onModuleInit();
+
+    this.server.use((socket: TSocket, next) => {
+        socket; // eslint-disable-line @typescript-eslint/no-unused-vars
+        return next();
+    });
   }
 
-  @SubscribeMessage('findOneNotification')
-  findOne(@MessageBody() id: number) {
-    return this.notificationService.findOne(id);
+  processNewConnection(socket: TSocket): void {
+    const userId = socket.userId;
+
+    if (userId) {
+      this.userIdToSocketMap.set(userId, socket);
+    }
   }
 
-  @SubscribeMessage('updateNotification')
-  update(@MessageBody() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationService.update(
-      updateNotificationDto.id,
-      updateNotificationDto,
-    );
+  emitPayloadToRoom<TPayload>(room: string, event: string, payload: TPayload): void {
+    this.server.to(room).emit(event, payload);
   }
 
-  @SubscribeMessage('removeNotification')
-  remove(@MessageBody() id: number) {
-    return this.notificationService.remove(id);
+  emitPayloadForEvent<TPayload>(event: string, payload: TPayload): void {
+    this.server.emit(event, payload);
+  }
+
+  @SubscribeMessage(EEventType.CREATENOTIFCATION)
+  handleCreate(@MessageBody() payload: NotificationDto, @ConnectedSocket() socket: TSocket): void {
+    const parsedPayload = { ...payload, sender: socket.userId as number };
+    this.emitPayloadForEvent( EEventType.GETNOTIFICATION, parsedPayload);
   }
 }

@@ -17,6 +17,16 @@ export class ExpeditionService {
     return this.expeditionRepository.create(createExpeditionDto);
   }
 
+  async find(params: string) {
+    return this.expeditionRepository.find({
+      $or: [
+        { name: { $regex: params, $options: 'i' } },
+        { location: { $regex: params, $options: 'i' } },
+        { type: { $regex: params, $options: 'i' } },
+      ],
+    })
+  }
+
   findAll() {
     return this.expeditionRepository.find();
   }

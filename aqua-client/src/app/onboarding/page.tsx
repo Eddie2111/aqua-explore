@@ -1,119 +1,85 @@
 'use client';
 
 import React from 'react';
-
 import { useRouter } from 'next/navigation';
-
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
 import {
   Form,
-  FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormControl,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
 import { useLocalStorage } from '@/utils/localStorage';
-
 import userApiModule from '@/components/shared/api/modules/auth';
 import { queryClient, useMutation } from '@/components/shared/api/core/wrapper';
 
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-
 const nameSchema = z.object({
   name: z
-  .string()
-  .min(1, { message: 'Name is required' })
-  .regex(/^[a-z A-Z]+$/, {message: 'Name must be alphabetic'})
+    .string()
+    .min(1, { message: 'Name is required' })
+    .regex(/^[a-zA-Z\s]+$/, { message: 'Name must be alphabetic' }),
 });
-
-export const nameSchemaResolver = zodResolver(nameSchema);
-export type TNameSchema = z.infer<typeof nameSchema>;
-
 
 export default function Auth() {
   const router = useRouter();
   const { getLocalStorage, setLocalStorage } = useLocalStorage();
-  const form = useForm<TNameSchema>({
-    resolver: nameSchemaResolver,
-    defaultValues: {
-      name: '',
-    },
-  });
-  const id = getLocalStorage('id') ?? "";
 
-  const mutation = useMutation<any, Error, TNameSchema>({
-    mutationFn: (data) => userApiModule.onboard({name: data.name, id:id}),
+  const form = useForm({
+    resolver: zodResolver(nameSchema),
+    defaultValues: { name: '' },
+  });
+
+  const id = getLocalStorage('id') || '';
+
+  const { mutate } = useMutation({
+    mutationFn: ({ name }: { name: string }) => userApiModule.onboard({ name, id }),
     onSuccess: (data) => {
       setLocalStorage('token', data.access_token);
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      toast.success(
-        `Onboarding success, welcome ${data.name}!`,
-      );
+      toast.success(`Onboarding success, welcome ${data.name || 'User'}!`);
       router.push('/dashboard');
     },
     onError: (error) => {
-      console.error('Login error:', error);
-      form.setError('root', {
-        type: 'manual',
-        message: error.message,
-      });
+      form.setError('root', { type: 'manual', message: error.message });
     },
   });
 
-  function onSubmit(values: TNameSchema) {
-    mutation.mutate(values);
-    console.log(values);
-  }
+  const onSubmit = (values: { name: string }) => mutate(values);
 
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-grow mx-auto px-4 py-8 container">
+      <main className="flex-grow container mx-auto px-4 py-8">
         <div className="bg-white shadow-md mx-auto p-8 rounded-lg max-w-md">
-          <h1 className="mb-6 font-bold text-3xl text-blue-800">Welcome, onboard</h1>
+          <h1 className="mb-6 text-3xl font-bold text-blue-800">Welcome, onboard</h1>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="mb-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel className="block mb-2 font-bold text-gray-700 text-md">
-                        Full Name
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="John Doe"
-                          type="text"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        This is the name that will publicly visible.
-                      </FormDescription>
-                      <FormMessage>
-                        {fieldState.error && (
-                          <span className="text-red-500">
-                            {fieldState.error.message}
-                          </span>
-                        )}
-                      </FormMessage>
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md w-full text-white transition-colors"
-              >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" type="text" {...field} />
+                    </FormControl>
+                    <FormMessage>
+                      {fieldState.error?.message && (
+                        <span className="text-red-500">{fieldState.error.message}</span>
+                      )}
+                    </FormMessage>
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full bg-blue-500 text-white hover:bg-blue-600">
                 Get Onboard
               </Button>
             </form>
