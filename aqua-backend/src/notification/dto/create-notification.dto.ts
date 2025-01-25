@@ -1,15 +1,15 @@
-import { IsDate, IsNotEmpty, IsString } from "class-validator";
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export enum ENotificationType {
-    UPDATE = 'UPDATE',
-    ADD = 'ADD',
-    DELETE = 'DELETE',
+  UPDATE = 'UPDATE',
+  ADD = 'ADD',
+  DELETE = 'DELETE',
 }
 
 export enum EEventType {
-    CREATENOTIFCATION = 'createNotification',
-    GETNOTIFICATION = 'getNotification'
-  }
+  CREATENOTIFCATION = 'createNotification',
+  GETNOTIFICATION = 'getNotification',
+}
 
 export class NotificationDto {
   @IsNotEmpty()
@@ -23,5 +23,4 @@ export class NotificationDto {
   @IsNotEmpty()
   @IsString()
   type: ENotificationType;
-
 }

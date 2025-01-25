@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client';
 
-const WS_BASE_URL = "ws://localhost:5001";
+const WS_BASE_URL = 'ws://localhost:5001';
 
 export const useWebsocket = ({
   path,
@@ -14,9 +14,9 @@ export const useWebsocket = ({
   autoConnect?: boolean;
 }) => {
   const socket = useMemo(() => {
-    return io(WS_BASE_URL ?? "", {
+    return io(WS_BASE_URL ?? '', {
       autoConnect,
-      transports: ["websocket"],
+      transports: ['websocket'],
       path,
     });
   }, [autoConnect, path]);

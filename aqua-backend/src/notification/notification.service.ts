@@ -11,5 +11,4 @@ export class NotificationService {
   findAll() {
     return `This action returns all notification`;
   }
-
 }

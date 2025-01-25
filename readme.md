@@ -158,9 +158,16 @@ AquaExplore is a simplified booking platform for undersea submersible expedition
 
 ---
 
+### Project Setup & Startup
+
+1. ```Pnpm``` has been used to manage dependencies.
+2. ```install.sh``` script to set up the project.
+3. or ```docker-compose.yml``` to run the application in a containerized environment.
+4. For frontend, navigate to aqua-client and ```pnpm run dev``` to start the development server for frontend.
+5. For backend, navigate to aqua-backend and ```pnpm run start:dev``` to start the development server for backend.
+
 ### Timeline and Completion
 
 - **Start Date**\*\*: January 22, 2025.\*\*
 - ***End Date***\*\*: January 26, 2025.\*\*
 - *Delivery deadline exceeded by 1:30 hours.*
-

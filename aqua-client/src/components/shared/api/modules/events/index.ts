@@ -1,1 +1,1 @@
-export { default } from "./events.api";
+export { default } from './events.api';

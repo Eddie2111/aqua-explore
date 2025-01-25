@@ -24,7 +24,7 @@ export class ExpeditionService {
         { location: { $regex: params, $options: 'i' } },
         { type: { $regex: params, $options: 'i' } },
       ],
-    })
+    });
   }
 
   findAll() {
@@ -36,7 +36,10 @@ export class ExpeditionService {
   }
 
   update(id: string, updateExpeditionDto: UpdateExpeditionDto) {
-    return this.expeditionRepository.updateOne({ _id: id }, updateExpeditionDto);
+    return this.expeditionRepository.updateOne(
+      { _id: id },
+      updateExpeditionDto,
+    );
   }
 
   delete(id: string): Promise<any> {

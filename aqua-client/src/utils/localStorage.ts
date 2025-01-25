@@ -19,7 +19,7 @@ const useLocalStorage = () => {
   const clearLocalStorage = () => {
     if (!isBrowser) return;
     localStorage.clear();
-  }
+  };
 
   return { clearLocalStorage, getLocalStorage, setLocalStorage };
 };

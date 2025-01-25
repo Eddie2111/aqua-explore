@@ -33,10 +33,10 @@ class userModule {
   }
 
   async create(data: TExpedition) {
-    return this.request("/expedition", EMethodTypes.POST, data);
+    return this.request('/expedition', EMethodTypes.POST, data);
   }
   async read(): Promise<TExpedition[] | null> {
-    return this.request("/expedition", EMethodTypes.GET);
+    return this.request('/expedition', EMethodTypes.GET);
   }
   async readOne(data: string): Promise<TExpedition | null> {
     return this.request(`/expedition/${data}`, EMethodTypes.GET);

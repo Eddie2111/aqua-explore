@@ -1,4 +1,4 @@
-import { EMethodTypes } from "../../core/EMethod.types";
+import { EMethodTypes } from '../../core/EMethod.types';
 
 export type TRequestConfig = {
   method: EMethodTypes;
@@ -18,4 +18,4 @@ export type TLoginResponse = {
 export type TVerifyRequest = {
   token: string;
   requestType: string;
-}
+};

@@ -6,11 +6,11 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalValidationPipeline = new ValidationPipe();
-  
+
   app.useGlobalPipes(globalValidationPipeline);
   app.setGlobalPrefix('api/v1');
   app.use(cookieParser());
-  
+
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -21,7 +21,7 @@ async function bootstrap() {
     type: VersioningType.URI,
     prefix: 'v1',
   });
-  
+
   await app.listen(process.env.PORT);
   console.log(`This application is running on: ${await app.getUrl()}`);
 }

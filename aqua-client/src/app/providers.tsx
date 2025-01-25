@@ -22,8 +22,8 @@ export default function ClientProvider({
   const { getLocalStorage } = useLocalStorage();
   const user_id = getLocalStorage('id');
   const token = getLocalStorage('auth_token');
-  const role = isValidRole(getLocalStorage('role') || '') 
-    ? getLocalStorage('role') 
+  const role = isValidRole(getLocalStorage('role') || '')
+    ? getLocalStorage('role')
     : 'GUEST';
 
   const [isInitialized, setIsInitialized] = useState(false);
@@ -40,20 +40,28 @@ export default function ClientProvider({
   const checkRouteAccess = useCallback(
     (currentRole: UserRole, currentPathname: string) => {
       const permissions = ROLE_PERMISSIONS[currentRole];
-      
-      if (permissions.restrictedRoutes.some((route) => currentPathname.startsWith(route))) {
+
+      if (
+        permissions.restrictedRoutes.some((route) =>
+          currentPathname.startsWith(route),
+        )
+      ) {
         router.push('/');
         return false;
       }
 
-      if (!permissions.allowedRoutes.some((route) => currentPathname.startsWith(route))) {
+      if (
+        !permissions.allowedRoutes.some((route) =>
+          currentPathname.startsWith(route),
+        )
+      ) {
         router.push('/');
         return false;
       }
 
       return true;
     },
-    [router]
+    [router],
   );
 
   useEffect(() => {
@@ -70,14 +78,25 @@ export default function ClientProvider({
 
   useEffect(() => {
     if (isInitialized && !isPending) {
-      if (!user_id && !ROLE_PERMISSIONS.GUEST.allowedRoutes.includes(pathname)) {
+      if (
+        !user_id &&
+        !ROLE_PERMISSIONS.GUEST.allowedRoutes.includes(pathname)
+      ) {
         router.push('/');
         return;
       }
 
       checkRouteAccess(role as UserRole, pathname);
     }
-  }, [isInitialized, isPending, pathname, role, router, checkRouteAccess, user_id]);
+  }, [
+    isInitialized,
+    isPending,
+    pathname,
+    role,
+    router,
+    checkRouteAccess,
+    user_id,
+  ]);
 
   if (!isInitialized) {
     return (

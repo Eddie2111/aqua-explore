@@ -1,5 +1,9 @@
 import { EMethodTypes } from '../../core/EMethod.types';
-import type { TRequestConfig, TSignInProps, TVerifyRequest } from './auth.types';
+import type {
+  TRequestConfig,
+  TSignInProps,
+  TVerifyRequest,
+} from './auth.types';
 
 class userModule {
   private readonly baseURL: string;
@@ -17,7 +21,7 @@ class userModule {
     const config: TRequestConfig = {
       method,
       headers: {
-        'Content-Type': 'application/json',        
+        'Content-Type': 'application/json',
         ...headers,
       },
     };
@@ -33,13 +37,15 @@ class userModule {
     return data;
   }
 
-  async getMe(authToken: {authToken: string}) {
+  async getMe(authToken: { authToken: string }) {
     const token = authToken.authToken.replace(/^"|"$/g, '');
-    return this.request("/user/getme/", EMethodTypes.POST, { authToken: token });
+    return this.request('/user/getme/', EMethodTypes.POST, {
+      authToken: token,
+    });
   }
 
-  async onboard({name,id}:{name:string,id:string}){
-    return this.request('/user/onboard', EMethodTypes.POST, {name,id});
+  async onboard({ name, id }: { name: string; id: string }) {
+    return this.request('/user/onboard', EMethodTypes.POST, { name, id });
   }
 
   async signIn({ email }: TSignInProps) {
@@ -51,10 +57,12 @@ class userModule {
       email,
     });
   }
-  async verifyUser({token, requestType}: TVerifyRequest) {
+  async verifyUser({ token, requestType }: TVerifyRequest) {
     return this.request('/user/verify', EMethodTypes.POST, {
-     token, requestType 
-    })};
+      token,
+      requestType,
+    });
+  }
 
   async signOut() {
     throw new Error('Method not implemented.');

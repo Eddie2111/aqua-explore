@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import Link from 'next/link';
 
 import { useLocalStorage } from '@/utils/localStorage';
@@ -21,26 +21,28 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href={`/${role?.toLocaleLowerCase()}/dashboard/`} className="hover:text-blue-200">
+              <Link
+                href={`/${role?.toLocaleLowerCase()}/dashboard/`}
+                className="hover:text-blue-200"
+              >
                 Dashboard
               </Link>
             </li>
             <li>
-              {
-                user_id ? (
-                  <Link href="/logout" className="hover:text-blue-200">
-                    Logout
+              {user_id ? (
+                <Link href="/logout" className="hover:text-blue-200">
+                  Logout
+                </Link>
+              ) : (
+                <div className="flex flex-row gap-2">
+                  <Link href="/signup" className="hover:text-blue-200">
+                    Register
                   </Link>
-                ) :
-                  <div className="flex flex-row gap-2">
-                    <Link href="/signup" className="hover:text-blue-200">
-                      Register
-                    </Link>
-                    <Link href="/login" className="hover:text-blue-200">
-                      Login
-                    </Link>
-                  </div>
-              }
+                  <Link href="/login" className="hover:text-blue-200">
+                    Login
+                  </Link>
+                </div>
+              )}
             </li>
           </ul>
         </nav>

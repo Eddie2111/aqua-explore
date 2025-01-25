@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException, Req, Res } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EmailService } from 'src/email/email.service';
@@ -19,14 +19,16 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async getMe(token: { authToken: string}){
+  async getMe(token: { authToken: string }) {
     const getToken = token.authToken.slice(3, -3);
     if (!getToken) throw new Error('no token');
     const verifyUser = await this.jwtService.verify(getToken, {
       secret: process.env.JWT_SECRET,
     });
-    const getUser = await this.userRepository.findOne({email: verifyUser.email});
-    if(!getUser) throw new NotFoundException('User not found');
+    const getUser = await this.userRepository.findOne({
+      email: verifyUser.email,
+    });
+    if (!getUser) throw new NotFoundException('User not found');
     return {
       email: getUser.email,
       name: getUser.name,
@@ -45,14 +47,21 @@ export class UserService {
   async verify(verifyUserDto: VerifyUserDto, res: Response) {
     console.log(verifyUserDto);
     try {
-      const data = await this.jwtService.verify(verifyUserDto.token, {secret: process.env.JWT_SECRET});
+      const data = await this.jwtService.verify(verifyUserDto.token, {
+        secret: process.env.JWT_SECRET,
+      });
       if (verifyUserDto.requestType == ERequestType.LOGIN) {
-        console.log("request hit with login");
+        console.log('request hit with login');
         const userData = await this.userRepository.findOne({
           email: data.email,
         });
         const token = await this.jwtService.sign(
-          { email: userData.email, name: userData.name, id: userData._id, role: userData.role },
+          {
+            email: userData.email,
+            name: userData.name,
+            id: userData._id,
+            role: userData.role,
+          },
           {
             secret: process.env.JWT_SECRET,
           },
@@ -63,7 +72,13 @@ export class UserService {
           sameSite: 'lax',
           maxAge: 3 * 24 * 60 * 60 * 1000,
         });
-        return res.json({ token: token, id: userData._id, email: userData.email, role: userData.role, message: 'verification success' });
+        return res.json({
+          token: token,
+          id: userData._id,
+          email: userData.email,
+          role: userData.role,
+          message: 'verification success',
+        });
       }
       if (verifyUserDto.requestType == ERequestType.SIGNUP) {
         const createUserEmail = await this.userRepository.create({
@@ -96,13 +111,23 @@ export class UserService {
     }
   }
 
-  async onboarding(userData: {name:string,id:string}) {
+  async onboarding(userData: { name: string; id: string }) {
     const cleanedId = userData.id.replace(/^"|"$/g, '');
-    await this.userRepository.updateOne({_id: cleanedId}, {name: userData.name});
-    const getUser = await this.userRepository.findOne({_id: cleanedId}).select('name email role id');
-    if(!getUser) throw new NotFoundException('User not found');
+    await this.userRepository.updateOne(
+      { _id: cleanedId },
+      { name: userData.name },
+    );
+    const getUser = await this.userRepository
+      .findOne({ _id: cleanedId })
+      .select('name email role id');
+    if (!getUser) throw new NotFoundException('User not found');
     const token = this.jwtService.sign(
-      { email: getUser.email, name: getUser.name, id: getUser._id, role: getUser.role },
+      {
+        email: getUser.email,
+        name: getUser.name,
+        id: getUser._id,
+        role: getUser.role,
+      },
       {
         secret: process.env.JWT_SECRET,
       },

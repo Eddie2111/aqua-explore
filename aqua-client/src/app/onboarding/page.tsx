@@ -41,7 +41,8 @@ export default function Auth() {
   const id = getLocalStorage('id') || '';
 
   const { mutate } = useMutation({
-    mutationFn: ({ name }: { name: string }) => userApiModule.onboard({ name, id }),
+    mutationFn: ({ name }: { name: string }) =>
+      userApiModule.onboard({ name, id }),
     onSuccess: (data) => {
       setLocalStorage('token', data.access_token);
       queryClient.invalidateQueries({ queryKey: ['user'] });
@@ -59,7 +60,9 @@ export default function Auth() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="bg-white shadow-md mx-auto p-8 rounded-lg max-w-md">
-          <h1 className="mb-6 text-3xl font-bold text-blue-800">Welcome, onboard</h1>
+          <h1 className="mb-6 text-3xl font-bold text-blue-800">
+            Welcome, onboard
+          </h1>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -73,13 +76,18 @@ export default function Auth() {
                     </FormControl>
                     <FormMessage>
                       {fieldState.error?.message && (
-                        <span className="text-red-500">{fieldState.error.message}</span>
+                        <span className="text-red-500">
+                          {fieldState.error.message}
+                        </span>
                       )}
                     </FormMessage>
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-blue-500 text-white hover:bg-blue-600">
+              <Button
+                type="submit"
+                className="w-full bg-blue-500 text-white hover:bg-blue-600"
+              >
                 Get Onboard
               </Button>
             </form>

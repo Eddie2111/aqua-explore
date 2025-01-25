@@ -1,9 +1,9 @@
-import { IsArray, IsDate, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateExpeditionDto {
   @IsString()
-  _id?:string;
+  _id?: string;
   @IsString()
   name!: string;
   @IsString()

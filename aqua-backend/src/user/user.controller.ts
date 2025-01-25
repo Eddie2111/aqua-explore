@@ -6,9 +6,9 @@ import {
   Patch,
   Param,
   Delete,
-  Req, Res
+  Res,
 } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -18,8 +18,8 @@ import { VerifyUserDto } from './dto/verify-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post("/getme")
-  getMe(@Body() authToken: { authToken: string}) {
+  @Post('/getme')
+  getMe(@Body() authToken: { authToken: string }) {
     return this.userService.getMe(authToken);
   }
   @Post('/login')
@@ -32,10 +32,10 @@ export class UserController {
   }
   @Post('/verify')
   userVerify(@Body() verifyUserDto: VerifyUserDto, @Res() res: Response) {
-    return this.userService.verify(verifyUserDto,res);
+    return this.userService.verify(verifyUserDto, res);
   }
-  @Post("/onboard")
-  userOnboard(@Body() onboardUserDto: { name: string; id: string; }) {
+  @Post('/onboard')
+  userOnboard(@Body() onboardUserDto: { name: string; id: string }) {
     return this.userService.onboarding(onboardUserDto);
   }
 

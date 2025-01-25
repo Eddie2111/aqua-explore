@@ -3,20 +3,19 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
-} from "@nestjs/websockets";
-import { AbstractWebsocketGateway, TSocket } from "./abstract.gateway";
-import { EEventType, NotificationDto } from "./dto/create-notification.dto";
+} from '@nestjs/websockets';
+import { AbstractWebsocketGateway, TSocket } from './abstract.gateway';
+import { EEventType, NotificationDto } from './dto/create-notification.dto';
 
 @WebSocketGateway(5001, {
   cors: {
     origin: '*',
   },
-  path: "/",
+  path: '/',
   transports: ['websocket', 'polling'],
 })
 export class NotificationGateway extends AbstractWebsocketGateway {
-  constructor(
-  ) {
+  constructor() {
     super();
   }
 
@@ -26,8 +25,8 @@ export class NotificationGateway extends AbstractWebsocketGateway {
     super.onModuleInit();
 
     this.server.use((socket: TSocket, next) => {
-        socket; // eslint-disable-line @typescript-eslint/no-unused-vars
-        return next();
+      socket; // eslint-disable-line @typescript-eslint/no-unused-vars
+      return next();
     });
   }
 
@@ -39,7 +38,11 @@ export class NotificationGateway extends AbstractWebsocketGateway {
     }
   }
 
-  emitPayloadToRoom<TPayload>(room: string, event: string, payload: TPayload): void {
+  emitPayloadToRoom<TPayload>(
+    room: string,
+    event: string,
+    payload: TPayload,
+  ): void {
     this.server.to(room).emit(event, payload);
   }
 
@@ -48,8 +51,11 @@ export class NotificationGateway extends AbstractWebsocketGateway {
   }
 
   @SubscribeMessage(EEventType.CREATENOTIFCATION)
-  handleCreate(@MessageBody() payload: NotificationDto, @ConnectedSocket() socket: TSocket): void {
+  handleCreate(
+    @MessageBody() payload: NotificationDto,
+    @ConnectedSocket() socket: TSocket,
+  ): void {
     const parsedPayload = { ...payload, sender: socket.userId as number };
-    this.emitPayloadForEvent( EEventType.GETNOTIFICATION, parsedPayload);
+    this.emitPayloadForEvent(EEventType.GETNOTIFICATION, parsedPayload);
   }
 }

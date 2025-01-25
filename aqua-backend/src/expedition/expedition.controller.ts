@@ -36,7 +36,6 @@ export class ExpeditionController {
     return this.expeditionService.update(id, createExpeditionDto);
   }
 
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.expeditionService.findOne(id);

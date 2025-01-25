@@ -32,22 +32,42 @@ const expeditionSchema = z.object({
     .min(10, { message: 'Description must be at least 10 characters' })
     .max(500, { message: 'Description must be less than 500 characters' }),
   expeditionDate: z.coerce.date(),
-  expeditionStatus: z.enum(['PLANNED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']),
-  expeditionType: z.enum(['RESEARCH', 'ADVENTURE', 'CONSERVATION', 'EDUCATIONAL']),
+  expeditionStatus: z.enum([
+    'PLANNED',
+    'IN_PROGRESS',
+    'COMPLETED',
+    'CANCELLED',
+  ]),
+  expeditionType: z.enum([
+    'RESEARCH',
+    'ADVENTURE',
+    'CONSERVATION',
+    'EDUCATIONAL',
+  ]),
   expeditionLocation: z
     .string()
     .min(1, { message: 'Location is required' })
     .max(100, { message: 'Location must be less than 100 characters' }),
-  expeditionDuration: z.coerce.number().min(1, { message: 'Duration must be at least 1 day' }),
-  expeditionCost: z.coerce.number().min(0, { message: 'Cost cannot be negative' }),
-  expeditionCapacity: z.coerce.number().min(1, { message: 'Capacity must be at least 1' }),
+  expeditionDuration: z.coerce
+    .number()
+    .min(1, { message: 'Duration must be at least 1 day' }),
+  expeditionCost: z.coerce
+    .number()
+    .min(0, { message: 'Cost cannot be negative' }),
+  expeditionCapacity: z.coerce
+    .number()
+    .min(1, { message: 'Capacity must be at least 1' }),
   expeditionParticipants: z.array(z.any()),
 });
 
 export type TExpeditionSchema = z.infer<typeof expeditionSchema>;
 export const expeditionSchemaResolver = zodResolver(expeditionSchema);
 
-export default function ExpeditionCreationForm({onSuccess}:{onSuccess:()=>void}) {
+export default function ExpeditionCreationForm({
+  onSuccess,
+}: {
+  onSuccess: () => void;
+}) {
   const router = useRouter();
   console.log(onSuccess);
   const form = useForm<TExpeditionSchema>({
@@ -91,7 +111,9 @@ export default function ExpeditionCreationForm({onSuccess}:{onSuccess:()=>void})
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow mx-auto px-4 py-8 container">
         <div className="bg-white shadow-md mx-auto p-8 rounded-lg max-w-2xl">
-          <h1 className="mb-6 font-bold text-3xl text-blue-800">Create New Expedition</h1>
+          <h1 className="mb-6 font-bold text-3xl text-blue-800">
+            Create New Expedition
+          </h1>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -101,9 +123,14 @@ export default function ExpeditionCreationForm({onSuccess}:{onSuccess:()=>void})
                   <FormItem>
                     <FormLabel>Expedition Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Arctic Research Expedition" {...field} />
+                      <Input
+                        placeholder="Arctic Research Expedition"
+                        {...field}
+                      />
                     </FormControl>
-                    <FormDescription>Choose a unique name for your expedition</FormDescription>
+                    <FormDescription>
+                      Choose a unique name for your expedition
+                    </FormDescription>
                     <FormMessage>{fieldState.error?.message}</FormMessage>
                   </FormItem>
                 )}
@@ -116,12 +143,14 @@ export default function ExpeditionCreationForm({onSuccess}:{onSuccess:()=>void})
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Detailed description of the expedition" 
-                        {...field} 
+                      <Textarea
+                        placeholder="Detailed description of the expedition"
+                        {...field}
                       />
                     </FormControl>
-                    <FormDescription>Provide a comprehensive overview of the expedition</FormDescription>
+                    <FormDescription>
+                      Provide a comprehensive overview of the expedition
+                    </FormDescription>
                     <FormMessage>{fieldState.error?.message}</FormMessage>
                   </FormItem>
                 )}
@@ -138,9 +167,11 @@ export default function ExpeditionCreationForm({onSuccess}:{onSuccess:()=>void})
                         <Input
                           type="date"
                           {...field}
-                          value={field.value instanceof Date 
-                            ? field.value.toISOString().split('T')[0] 
-                            : field.value}
+                          value={
+                            field.value instanceof Date
+                              ? field.value.toISOString().split('T')[0]
+                              : field.value
+                          }
                           onChange={(e) => {
                             field.onChange(new Date(e.target.value));
                           }}
@@ -157,12 +188,19 @@ export default function ExpeditionCreationForm({onSuccess}:{onSuccess:()=>void})
                     <FormItem>
                       <FormLabel>Expedition Status</FormLabel>
                       <FormControl>
-                        <select 
-                          {...field} 
+                        <select
+                          {...field}
                           className="w-full p-2 border rounded"
                         >
-                          {['PLANNED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map(status => (
-                            <option key={status} value={status}>{status}</option>
+                          {[
+                            'PLANNED',
+                            'IN_PROGRESS',
+                            'COMPLETED',
+                            'CANCELLED',
+                          ].map((status) => (
+                            <option key={status} value={status}>
+                              {status}
+                            </option>
                           ))}
                         </select>
                       </FormControl>
@@ -177,12 +215,19 @@ export default function ExpeditionCreationForm({onSuccess}:{onSuccess:()=>void})
                     <FormItem>
                       <FormLabel>Expedition Type</FormLabel>
                       <FormControl>
-                        <select 
-                          {...field} 
+                        <select
+                          {...field}
                           className="w-full p-2 border rounded"
                         >
-                          {['RESEARCH', 'ADVENTURE', 'CONSERVATION', 'EDUCATIONAL'].map(type => (
-                            <option key={type} value={type}>{type}</option>
+                          {[
+                            'RESEARCH',
+                            'ADVENTURE',
+                            'CONSERVATION',
+                            'EDUCATIONAL',
+                          ].map((type) => (
+                            <option key={type} value={type}>
+                              {type}
+                            </option>
                           ))}
                         </select>
                       </FormControl>
