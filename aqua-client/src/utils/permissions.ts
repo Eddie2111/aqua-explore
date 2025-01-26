@@ -11,15 +11,22 @@ export type RolePermissionsMap = {
 
 export const ROLE_PERMISSIONS: RolePermissionsMap = {
   ADMIN: {
-    allowedRoutes: ['/admin', '/dashboard'],
+    allowedRoutes: ['/admin', '/dashboard', '/logout'],
     restrictedRoutes: ['/user'],
   },
   USER: {
-    allowedRoutes: ['/user', '/profile'],
+    allowedRoutes: ['/user', '/profile', '/logout'],
     restrictedRoutes: ['/admin'],
   },
   GUEST: {
-    allowedRoutes: ['/', '/login', '/signup', '/onboarding', '/auth/verify'],
-    restrictedRoutes: [],
+    allowedRoutes: [
+      '/',
+      '/login',
+      '/signup',
+      '/onboarding',
+      '/auth/verify',
+      '/logout',
+    ],
+    restrictedRoutes: ['/user', '/admin'],
   },
 };

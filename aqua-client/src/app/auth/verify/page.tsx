@@ -46,6 +46,7 @@ export default function VerifyPage() {
       console.error('Login error:', error);
       if (!hasMutated) {
         toast.error('Error verifying user');
+        router.push('/');
       }
     },
   });
