@@ -41,6 +41,34 @@ export class ExpeditionService {
       updateExpeditionDto,
     );
   }
+  async addParticipants(expeditionParticipant: {
+    expeditionId: string;
+    participantId: string;
+  }) {
+    const expedition = await this.expeditionRepository.findById(
+      expeditionParticipant.expeditionId,
+    );
+
+    if (!expedition) {
+      throw new Error('Expedition not found');
+    }
+
+    if (
+      expedition.expeditionParticipants.length >= expedition.expeditionCapacity
+    ) {
+      throw new Error('Expedition has reached maximum capacity');
+    }
+
+    return this.expeditionRepository.findOneAndUpdate(
+      { _id: expeditionParticipant.expeditionId },
+      {
+        $addToSet: {
+          expeditionParticipants: expeditionParticipant.participantId,
+        },
+      },
+      { new: true },
+    );
+  }
 
   delete(id: string): Promise<any> {
     return this.expeditionRepository.deleteOne({ _id: id });
