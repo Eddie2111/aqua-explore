@@ -47,6 +47,15 @@ class userModule {
   async delete(data: string) {
     return this.request(`/expedition/${data}`, EMethodTypes.DELETE);
   }
+  async search(params: string) {
+    return this.request(`/expedition/search/${params}`, EMethodTypes.GET);
+  }
+  async booking(expeditionId: string, participantId: string) {
+    return this.request('/expedition/addParticipant', EMethodTypes.POST, {
+      expeditionId,
+      participantId,
+    });
+  }
 }
 
 const expeditionApiModule = new userModule('http://localhost:5000/api/v1');

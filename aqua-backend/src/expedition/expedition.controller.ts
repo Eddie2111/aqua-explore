@@ -31,9 +31,14 @@ export class ExpeditionController {
   }
 
   @Post('/addParticipant')
-  addParticipant(@Body() createExpeditionDto: UpdateExpeditionDto) {
-    const id = createExpeditionDto._id;
-    return this.expeditionService.update(id, createExpeditionDto);
+  addParticipant(
+    @Body()
+    expeditionParticipant: {
+      expeditionId: string;
+      participantId: string;
+    },
+  ) {
+    return this.expeditionService.addParticipants(expeditionParticipant);
   }
 
   @Get(':id')
